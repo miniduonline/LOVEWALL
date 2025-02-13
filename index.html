@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Valentine's Day Love Wall</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sacramento&family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <style>
+    :root {
+      --primary: #ff0066;
+      --secondary: #ff758c;
+      --accent: #ff7eb3;
+      --text: #333;
+      --success: #4CAF50;
+      --error: #f44336;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, var(--secondary), var(--accent));
+      color: white;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    h1 {
+      font-family: 'Sacramento', cursive;
+      font-size: 3.5rem;
+      text-align: center;
+      margin-bottom: 30px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Love Wall Styles */
+    .love-wall {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 15px;
+      padding: 20px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+
+    .wall-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    #newPostBtn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    #newPostBtn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .love-wall-post {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 15px;
+      transition: all 0.3s ease;
+    }
+
+    .love-wall-post:hover {
+      transform: translateY(-2px);
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .own-post {
+      border-left: 4px solid var(--primary);
+    }
+
+    .post-content {
+      margin-bottom: 10px;
+      font-size: 1.1rem;
+      line-height: 1.5;
+    }
+
+    .post-meta {
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.7);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .owner-badge {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .post-actions {
+      margin-top: 10px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .action-btn {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: white;
+      padding: 8px 15px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .edit-btn:hover {
+      background: var(--secondary);
+      border-color: var(--secondary);
+    }
+
+    .delete-btn:hover {
+      background: var(--error);
+      border-color: var(--error);
+    }
+
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      width: 90%;
+      max-width: 500px;
+      color: var(--text);
+      position: relative;
+    }
+
+    .close-modal {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--text);
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 5px rgba(255, 0, 102, 0.2);
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .checkbox-group input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+    }
+
+    .submit-btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-size: 1rem;
+      width: 100%;
+      transition: all 0.3s ease;
+    }
+
+    .submit-btn:hover {
+      background: var(--secondary);
+      transform: translateY(-2px);
+    }
+
+    /* Toast Notification */
+    #notification {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 12px 24px;
+      border-radius: 8px;
+      color: white;
+      font-size: 0.9rem;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 1001;
+    }
+
+    #notification.show {
+      opacity: 1;
+    }
+
+    #notification.success {
+      background: var(--success);
+    }
+
+    #notification.error {
+      background: var(--error);
+    }
+
+    .post-count {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>💝 Valentine's Love Wall 💝</h1>
+    
+    <div class="love-wall">
+      <div class="wall-header">
+        <div class="post-count" id="postCount"></div>
+        <button id="newPostBtn" onclick="openModal()">
+          <i class="fas fa-heart"></i> Share Your Love
+        </button>
+      </div>
+      
+      <div id="postsContainer"></div>
+    </div>
+  </div>
+
+  <!-- New Post Modal -->
+  <div id="postModal" class="modal">
+    <div class="modal-content">
+      <button class="close-modal" onclick="closeModal()">×</button>
+      <h2 style="margin-bottom: 20px; color: var(--primary);">Share Your Love Message</h2>
+      
+      <div class="form-group">
+        <label for="postName">Your Name</label>
+        <input type="text" id="postName" placeholder="Enter your name">
+      </div>
+
+      <div class="checkbox-group">
+        <input type="checkbox" id="anonymousCheck">
+        <label for="anonymousCheck">Post Anonymously</label>
+      </div>
+
+      <div class="form-group">
+        <label for="postMessage">Your Message</label>
+        <textarea id="postMessage" rows="5" placeholder="Write your love message here..."></textarea>
+      </div>
+
+      <button class="submit-btn" onclick="submitPost()">
+        Post Message
+      </button>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="notification"></div>
+
+  <script>
+    // Initialize user ID and posts
+    const userId = sessionStorage.getItem('userId') || 
+      '_' + Math.random().toString(36).substr(2, 9);
+    sessionStorage.setItem('userId', userId);
+
+    const adminUsers = ['admin1', 'admin2']; // Add admin IDs here
+    const isAdmin = adminUsers.includes(userId);
+
+    let posts = JSON.parse(localStorage.getItem('lovePosts')) || [];
+
+    // Modal functions
+    function openModal() {
+      document.getElementById('postModal').style.display = 'flex';
+    }
+
+    function closeModal() {
+      document.getElementById('postModal').style.display = 'none';
+      document.getElementById('postMessage').value = '';
+      document.getElementById('postName').value = '';
+      document.getElementById('anonymousCheck').checked = false;
+    }
+
+    // Notification function
+    function showNotification(message, type = 'success') {
+      const notification = document.getElementById('notification');
+      notification.textContent = message;
+      notification.className = `show ${type}`;
+      
+      setTimeout(() => {
+        notification.className = '';
+      }, 3000);
+    }
+
+    // Post management functions
+    function submitPost() {
+      const message = document.getElementById('postMessage').value.trim();
+      const name = document.getElementById('postName').value.trim();
+      const isAnonymous = document.getElementById('anonymousCheck').checked;
+
+      if (!message) {
+        showNotification('Please write a message', 'error');
+        return;
+      }
+
+      const newPost = {
+        id: '_' + Math.random().toString(36).substr(2, 9),
+        userId: userId,
+        name: isAnonymous ? 'Anonymous' : (name || 'Anonymous'),
+        message: message,
+        timestamp: new Date().toISOString()
+      };
+
+      posts.unshift(newPost);
+      localStorage.setItem('lovePosts', JSON.stringify(posts));
+      
+      renderPosts();
+      closeModal();
+      showNotification('Your message has been posted successfully!');
+    }
+
+    function editPost(postId) {
+      const post = posts.find(p => p.id === postId);
+      
+      if (!post || (post.userId !== userId && !isAdmin)) {
+        showNotification('You cannot edit this post', 'error');
+        return;
+      }
+
+      const newMessage = prompt('Edit your message:', post.message);
+      if (newMessage && newMessage.trim()) {
+        post.message = newMessage.trim();
+        post.editedAt = new Date().toISOString();
+        localStorage.setItem('lovePosts', JSON.stringify(posts));
+        renderPosts();
+        showNotification('Post updated successfully!');
+      }
+    }
+
+    function deletePost(postId) {
+      const post = posts.find(p => p.id === postId);
+      
+      if (!post || (post.userId !== userId && !isAdmin)) {
+        showNotification('You cannot delete this post', 'error');
+        return;
+      }
+
+      if (confirm('Are you sure you want to delete this post?')) {
+        posts = posts.filter(p => p.id !== postId);
+        localStorage.setItem('lovePosts', JSON.stringify(posts));
+        renderPosts();
+        showNotification('Post deleted successfully!');
+      }
+    }
+
+    function renderPosts() {
+      const container = document.getElementById('postsContainer');
+      const postCount = document.getElementById('postCount');
+      
+      // Update post count
+      postCount.textContent = `Total Messages: ${posts.length}`;
+      
+      // Clear container
+      container.innerHTML = '';
+      
+      // Render each post
+      posts.forEach(post => {
+        const isOwner = post.userId === userId;
+        const canModify = isOwner || isAdmin;
+        const formattedDate = new Date(post.timestamp).toLocaleString();
+        
+        const postElement = document.createElement('div');
+        postElement.className = `love-wall-post ${isOwner ? 'own-post' : ''}`;
+        
+        postElement.innerHTML = `
+          <div class="post-content">${post.message}</div>
+          <div class="post-meta">
+            <span>
+              ${post.name} 
+              ${isOwner ? '<span class="owner-badge">(Your Post)</span>' : ''}
+              ${post.editedAt ? ' (edited)' : ''}
+            </span>
+            <span>${formattedDate}</span>
+          </div>
+          ${canModify ? `
+            <div class="post-actions">
+              <button class="action-btn edit-btn" onclick="editPost('${post.id}')">
+                <i class="fas fa-edit"></i> Edit
+              </button>
+              <button class="action-btn delete-btn" onclick="deletePost('${post.id}')">
+                <i class="fas fa-trash"></i> Delete
+              </button>
+            </div>
+          ` : ''}
+        `;
+        
+        container.appendChild(postElement);
+      });
+    }
+
+    // Initial render
+    renderPosts();
+  </script>
+</body>
+</html>
